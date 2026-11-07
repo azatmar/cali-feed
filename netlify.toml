@@ -1,0 +1,6 @@
+# Serve the calendar feed with the correct content type so Google/Apple accept it.
+[[headers]]
+  for = "/docs/berlin-milongas.ics"
+  [headers.values]
+    Content-Type = "text/calendar; charset=utf-8"
+    Cache-Control = "public, max-age=3600"
