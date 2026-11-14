@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Milongas Berlin – Kalender abonnieren</title>
+  <meta name="description" content="Abonniere alle Milongas in Berlin (Quelle: hoy-milonga.com) direkt in deinem Kalender.">
+  <style>
+    :root { color-scheme: light dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; display: grid; place-items: center;
+      font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: linear-gradient(135deg, #1e1b2e 0%, #3a1c3f 100%);
+      color: #f4f1f7; padding: 24px;
+    }
+    .card {
+      width: 100%; max-width: 440px; background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12); border-radius: 20px;
+      padding: 36px 28px; text-align: center; backdrop-filter: blur(8px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    }
+    h1 { font-size: 1.6rem; margin: 0 0 6px; font-weight: 700; }
+    .sub { margin: 0 0 26px; opacity: .75; font-size: .95rem; line-height: 1.4; }
+    .btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; padding: 15px 18px; margin: 10px 0; border-radius: 12px;
+      font-size: 1rem; font-weight: 600; text-decoration: none; cursor: pointer;
+      border: 1px solid transparent; transition: transform .08s ease, opacity .2s;
+    }
+    .btn:active { transform: scale(.98); }
+    .btn-google { background: #fff; color: #1a1a1a; }
+    .btn-apple  { background: rgba(255,255,255,0.10); color: #fff; border-color: rgba(255,255,255,0.2); }
+    .url-row {
+      display: flex; gap: 8px; margin-top: 22px;
+    }
+    .url-row input {
+      flex: 1; min-width: 0; padding: 11px 12px; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.18); background: rgba(0,0,0,0.25);
+      color: #f4f1f7; font-size: .8rem; font-family: ui-monospace, monospace;
+    }
+    .url-row button {
+      padding: 11px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.10); color: #fff; cursor: pointer; font-weight: 600;
+    }
+    .hint { margin-top: 20px; font-size: .8rem; opacity: .6; line-height: 1.5; }
+    a.src { color: #d9b3ff; }
+    .icon { width: 20px; height: 20px; flex: none; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>💃 Milongas Berlin</h1>
+    <p class="sub">Alle Milongas in Berlin automatisch im Kalender – aktualisiert sich von selbst.<br>Quelle: hoy-milonga.com</p>
+
+    <a class="btn btn-google" id="google" href="#">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.2V7.06H2.18a11 11 0 0 0 0 9.88l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84C6.71 7.31 9.14 5.38 12 5.38z"/></svg>
+      Zu Google Calendar hinzufügen
+    </a>
+
+    <a class="btn btn-apple" id="apple" href="#">
+      📅 Apple / Outlook abonnieren
+    </a>
+
+    <div class="url-row">
+      <input id="urlbox" type="text" readonly value="">
+      <button id="copy" type="button">Kopieren</button>
+    </div>
+
+    <p class="hint">
+      Falls Google die URL nicht automatisch übernimmt: kopiere die Adresse und füge sie
+      in Google Calendar unter <em>„Weitere Kalender (+) → Per URL"</em> ein.<br><br>
+      Quelle: <a class="src" href="https://www.hoy-milonga.com/berlin/de" target="_blank" rel="noopener">hoy-milonga.com/berlin</a>
+    </p>
+  </main>
+
+  <script>
+    // Build the subscription links from the page's own location, so this keeps
+    // working even if the repo/user name changes.
+    var origin = location.origin;                       // https://azatmar.github.io
+    var base = location.pathname.replace(/\/[^\/]*$/, ""); // /Cali
+    var httpsUrl = origin + base + "/docs/berlin-milongas.ics";
+    var webcalUrl = httpsUrl.replace(/^https?:/, "webcal:");
+
+    document.getElementById("urlbox").value = httpsUrl;
+    document.getElementById("google").href =
+      "https://calendar.google.com/calendar/render?cid=" + encodeURIComponent(webcalUrl);
+    document.getElementById("apple").href = webcalUrl;
+
+    document.getElementById("copy").addEventListener("click", function () {
+      navigator.clipboard.writeText(httpsUrl).then(function () {
+        var b = document.getElementById("copy");
+        var t = b.textContent; b.textContent = "✓";
+        setTimeout(function () { b.textContent = t; }, 1200);
+      });
+    });
+  </script>
+</body>
+</html>
